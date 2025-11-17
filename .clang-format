@@ -1,0 +1,29 @@
+---
+BasedOnStyle: LLVM
+Language: Cpp
+
+UseTab: Always
+IndentWidth: 4
+TabWidth: 4
+
+ColumnLimit: 80
+
+DerivePointerAlignment: false
+PointerAlignment: Right
+
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+
+BreakBinaryOperations: RespectPrecedence
+
+AlignOperands: Align
+
+AlignConsecutiveDeclarations: None
+AlignConsecutiveAssignments: None
+AlignConsecutiveMacros: None
+
+SpaceBeforeParens: ControlStatements
+SpaceAfterCStyleCast: false
+
+ReflowComments: false
