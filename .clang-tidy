@@ -1,5 +1,5 @@
 ---
-Checks:             '*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-llvm-*,-llvmlibc-*,-altera-*,-cppcoreguidelines-pro-bounds-pointer-arithmetic'
+Checks:             '*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-llvm-*,-llvmlibc-*,-altera-*,-cppcoreguidelines-pro-bounds-pointer-arithmetic, -cppcoreguidelines-avoid-non-const-global-variables, -portability-avoid-pragma-once'
 WarningsAsErrors:   '1'
 HeaderFilterRegex:  ''
 FormatStyle:        none
