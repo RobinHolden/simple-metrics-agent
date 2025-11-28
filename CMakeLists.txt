@@ -12,4 +12,5 @@ endif()
 
 add_executable(simple-metrics-agent
     src/main.cpp
+	src/config.cpp
 )
