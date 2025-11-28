@@ -7,8 +7,24 @@
 #include <string_view>
 #include <system_error>
 
-// Helper to parse integer seconds into std::chrono::seconds
+namespace opts {
+inline constexpr std::string_view help_long = "--help";
+inline constexpr std::string_view help_short = "-h";
+inline constexpr std::string_view endpoint = "--endpoint";
+inline constexpr std::string_view interval = "--interval";
+inline constexpr std::string_view hostname = "--hostname";
+} // namespace opts
+
 namespace {
+
+// Helper for consistent error text
+std::string missing_value_for(std::string_view flag) {
+	std::string msg = "Missing value for ";
+	msg += flag;
+	return msg;
+}
+
+// Helper to parse integer seconds into std::chrono::seconds
 bool parse_interval_seconds(std::string_view text, std::chrono::seconds &out,
 							std::string &error) {
 	long long value = 0;
@@ -17,7 +33,9 @@ bool parse_interval_seconds(std::string_view text, std::chrono::seconds &out,
 
 	auto result = std::from_chars(first, last, value);
 	if (result.ec != std::errc{} || result.ptr != last) {
-		error = "Invalid value for --interval (expected integer seconds)";
+		error = "Invalid value for ";
+		error += opts::interval;
+		error += " (expected integer seconds)";
 		return false;
 	}
 	if (value <= 0) {
@@ -28,6 +46,7 @@ bool parse_interval_seconds(std::string_view text, std::chrono::seconds &out,
 	out = std::chrono::seconds{value};
 	return true;
 }
+
 } // namespace
 
 ParseResult parse_args(int argc, char **argv) {
@@ -37,26 +56,25 @@ ParseResult parse_args(int argc, char **argv) {
 	for (int i = 1; i < argc; ++i) {
 		const std::string_view arg{argv[i]};
 
-		if (arg == std::string_view{"--help"}
-			|| arg == std::string_view{"-h"}) {
+		if (arg == opts::help_long || arg == opts::help_short) {
 			res.status = ParseStatus::Help;
 			return res;
 		}
 
-		if (arg == std::string_view{"--endpoint"}) {
+		if (arg == opts::endpoint) {
 			if (i + 1 >= argc) {
 				res.status = ParseStatus::Error;
-				res.error = "Missing value for --endpoint";
+				res.error = missing_value_for(opts::endpoint);
 				return res;
 			}
 			cfg.endpoint = argv[++i];
 			continue;
 		}
 
-		if (arg == std::string_view{"--interval"}) {
+		if (arg == opts::interval) {
 			if (i + 1 >= argc) {
 				res.status = ParseStatus::Error;
-				res.error = "Missing value for --interval";
+				res.error = missing_value_for(opts::interval);
 				return res;
 			}
 			const std::string_view val{argv[++i]};
@@ -71,10 +89,10 @@ ParseResult parse_args(int argc, char **argv) {
 			continue;
 		}
 
-		if (arg == std::string_view{"--hostname"}) {
+		if (arg == opts::hostname) {
 			if (i + 1 >= argc) {
 				res.status = ParseStatus::Error;
-				res.error = "Missing value for --hostname";
+				res.error = missing_value_for(opts::hostname);
 				return res;
 			}
 			cfg.hostname = argv[++i];
@@ -93,16 +111,36 @@ ParseResult parse_args(int argc, char **argv) {
 }
 
 void print_usage(std::ostream &os) {
+	const AgentConfig defaults{};
+
 	os
 		<< "simple-metrics-agent\n"
 		<< "Usage:\n"
-		<< "  simple-metrics-agent [--endpoint HOST:PORT] [--interval SECONDS] "
-		   "[--hostname NAME]\n"
+		<< "  simple-metrics-agent ["
+		<< opts::endpoint
+		<< " HOST:PORT] ["
+		<< opts::interval
+		<< " SECONDS] ["
+		<< opts::hostname
+		<< " NAME]\n"
 		<< "\n"
 		<< "Options:\n"
-		<< "  --endpoint   TCP endpoint to send metrics to (default "
-		   "127.0.0.1:9000)\n"
-		<< "  --interval   Metrics collection interval in seconds (default 5)\n"
-		<< "  --hostname   Override hostname field in metrics payload\n"
-		<< "  --help       Show this help and exit\n";
+		<< "  "
+		<< opts::endpoint
+		<< "   TCP endpoint to send metrics to (default "
+		<< defaults.endpoint
+		<< ")\n"
+		<< "  "
+		<< opts::interval
+		<< "   Metrics collection interval in seconds (default "
+		<< defaults.interval.count()
+		<< ")\n"
+		<< "  "
+		<< opts::hostname
+		<< "   Override hostname field in metrics payload\n"
+		<< "  "
+		<< opts::help_long
+		<< ", "
+		<< opts::help_short
+		<< "       Show this help and exit\n";
 }
