@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "agent.hpp"
 #include "config.hpp"
 
 int main(int argc, char **argv) {
@@ -19,21 +20,6 @@ int main(int argc, char **argv) {
 		break;
 	}
 
-	const AgentConfig &cfg = res.config;
-
-	std::cout << "simple-metrics-agent starting\n";
-	std::cout << "  endpoint: " << cfg.endpoint << '\n';
-	std::cout << "  interval: " << cfg.interval.count() << "s\n";
-	if (!cfg.hostname.empty()) {
-		std::cout << "  hostname: " << cfg.hostname << '\n';
-	} else {
-		std::cout << "  hostname: (auto-detect later)\n";
-	}
-
-	// TODO:
-	// - auto-detect hostname if empty
-	// - main loop with sleep and SIGINT/SIGTERM handling
-	// - metrics collection and TCP send
-
-	return 0;
+	const Agent agent{res.config};
+	return agent.run();
 }

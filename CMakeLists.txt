@@ -11,6 +11,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_executable(simple-metrics-agent
     src/main.cpp
 	src/config.cpp
+	src/agent.cpp
 )
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
