@@ -10,6 +10,7 @@ add_executable(simple-metrics-agent
     src/main.cpp
 	src/config.cpp
 	src/agent.cpp
+	src/metrics.cpp
 )
 
 target_compile_features(simple-metrics-agent PRIVATE cxx_std_20)

@@ -2,13 +2,13 @@
 
 #include <chrono>
 #include <csignal>
-#include <ctime>
+#include <format>
 #include <iostream>
 #include <thread>
 #include <utility>
-#include <format>
 
 #include "config.hpp"
+#include "metrics.hpp"
 
 namespace {
 
@@ -46,8 +46,22 @@ int Agent::run() const {
 
 	const auto interval = config_.interval;
 	while (!should_stop()) {
-		const auto now = std::chrono::system_clock::now();
-		std::cout << std::format("[tick] interval elapsed at {:%F %T}\n", now);
+		HostMetrics metrics{};
+		std::string error;
+		if (!collect_host_metrics(metrics, error)) {
+			std::cerr
+				<< "[metrics] collect_host_metrics failed: "
+				<< error
+				<< '\n';
+		} else {
+			const auto now = std::chrono::system_clock::now();
+			std::cout << std::format(
+				"[metrics] t={:%F %T} load1={:.2f} load5={:.2f} load15={:.2f} "
+				"mem_total={} mem_free={}\n",
+				now, metrics.load1, metrics.load5, metrics.load15,
+				metrics.mem_total_bytes, metrics.mem_free_bytes);
+		}
+
 		std::this_thread::sleep_for(interval);
 	}
 
