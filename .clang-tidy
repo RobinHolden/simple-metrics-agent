@@ -1,5 +1,23 @@
 ---
-Checks:             '*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-llvm-*,-llvmlibc-*,-altera-*,-cppcoreguidelines-pro-bounds-pointer-arithmetic, -cppcoreguidelines-avoid-non-const-global-variables, -portability-avoid-pragma-once'
+Checks:             '*,
+	-fuchsia-*,
+	-google-*,
+	-zircon-*,
+	-abseil-*,
+	-modernize-use-trailing-return-type,
+	-llvm-*,
+	-llvmlibc-*,
+	-altera-*,
+	-cppcoreguidelines-pro-bounds-pointer-arithmetic,
+	-cppcoreguidelines-avoid-non-const-global-variables,
+	-portability-avoid-pragma-once,
+	-cppcoreguidelines-pro-type-reinterpret-cast,
+	-hicpp-deprecated-headers,
+	-modernize-deprecated-headers,
+	-misc-include-cleaner,
+  -hicpp-use-auto,
+  -modernize-use-auto
+	'
 WarningsAsErrors:   '1'
 HeaderFilterRegex:  ''
 FormatStyle:        none
