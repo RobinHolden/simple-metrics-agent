@@ -28,3 +28,6 @@ SpaceBeforeParens: ControlStatements
 SpaceAfterCStyleCast: false
 
 ReflowComments: false
+
+IndentAccessModifiers: false
+AccessModifierOffset: -4
