@@ -113,34 +113,20 @@ ParseResult parse_args(int argc, char **argv) {
 void print_usage(std::ostream &os) {
 	const AgentConfig defaults{};
 
-	os
-		<< "simple-metrics-agent\n"
-		<< "Usage:\n"
-		<< "  simple-metrics-agent ["
-		<< opts::endpoint
-		<< " HOST:PORT] ["
-		<< opts::interval
-		<< " SECONDS] ["
-		<< opts::hostname
-		<< " NAME]\n"
-		<< "\n"
-		<< "Options:\n"
-		<< "  "
-		<< opts::endpoint
-		<< "   TCP endpoint to send metrics to (default "
-		<< defaults.endpoint
-		<< ")\n"
-		<< "  "
-		<< opts::interval
-		<< "   Metrics collection interval in seconds (default "
-		<< defaults.interval.count()
-		<< ")\n"
-		<< "  "
-		<< opts::hostname
-		<< "   Override hostname field in metrics payload\n"
-		<< "  "
-		<< opts::help_long
-		<< ", "
-		<< opts::help_short
-		<< "       Show this help and exit\n";
+	os << "simple-metrics-agent\n"
+	   << "Usage:\n"
+	   << "  simple-metrics-agent [" << opts::endpoint << " HOST:PORT] ["
+	   << opts::interval << " SECONDS] [" << opts::hostname << " NAME]\n"
+	   << "\n"
+	   << "Options:\n"
+	   << "  " << opts::endpoint
+	   << "   TCP endpoint to send metrics to (default " << defaults.endpoint
+	   << ")\n"
+	   << "  " << opts::interval
+	   << "   Metrics collection interval in seconds (default "
+	   << defaults.interval.count() << ")\n"
+	   << "  " << opts::hostname
+	   << "   Override hostname field in metrics payload\n"
+	   << "  " << opts::help_long << ", " << opts::help_short
+	   << "       Show this help and exit\n";
 }
