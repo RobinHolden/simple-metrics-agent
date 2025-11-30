@@ -18,15 +18,9 @@
 #include <sys/sysctl.h>
 #endif
 
-namespace {
+#include "posix_error.hpp"
 
-std::string errno_message(const char *what) {
-	const std::error_code err_code(errno, std::generic_category());
-	std::string msg = what;
-	msg += ": ";
-	msg += err_code.message();
-	return msg;
-}
+namespace {
 
 bool collect_load(HostMetrics &out, std::string &error) {
 	std::array<double, 3> loads{};
