@@ -5,7 +5,7 @@
 #include <string>
 
 struct AgentConfig {
-	std::string endpoint = "127.0.0.1:9000";
+	std::string endpoint = "127.0.0.1:9090";
 	std::chrono::seconds interval{5};
 	std::string hostname;
 };
