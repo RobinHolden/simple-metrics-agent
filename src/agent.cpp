@@ -8,6 +8,7 @@
 #include <utility>
 
 #include "config.hpp"
+#include "hostname.hpp"
 #include "metrics.hpp"
 #include "net.hpp"
 
@@ -39,15 +40,24 @@ int Agent::run() const {
 	std::cout << "simple-metrics-agent starting\n";
 	std::cout << "  endpoint: " << config_.endpoint << '\n';
 	std::cout << "  interval: " << config_.interval.count() << "s\n";
-	if (!config_.hostname.empty()) {
-		std::cout << "  hostname: " << config_.hostname << '\n';
-	} else {
-		std::cout << "  hostname: (auto-detect later)\n";
+
+	std::string error;
+
+	std::string hostname = config_.hostname;
+	if (hostname.empty()) {
+		const HostnameResult hn = detect_hostname();
+		if (!hn.ok) {
+			std::cerr << "[hostname] auto-detect failed: " << hn.error
+					  << " (using \"unknown\")\n";
+			hostname = "unknown";
+		} else {
+			hostname = hn.hostname;
+		}
 	}
+	std::cout << "  hostname: " << hostname << '\n';
 
 	Endpoint endpoint{};
 
-	std::string error;
 	if (!parse_endpoint(config_.endpoint, endpoint, error)) {
 		std::cerr << "Invalid endpoint '" << config_.endpoint << "': " << error
 				  << '\n';
@@ -70,7 +80,7 @@ int Agent::run() const {
 
 			const std::string json_line = std::format(
 				R"({{"hostname":"{}","load1":{:.2f},"load5":{:.2f},"load15":{:.2f},"mem_total":{},"mem_free":{}}})",
-				config_.hostname, metrics.load1, metrics.load5, metrics.load15,
+				hostname, metrics.load1, metrics.load5, metrics.load15,
 				metrics.mem_total_bytes, metrics.mem_free_bytes);
 
 			std::cout << std::format("[metrics] t={:%F %T} {}\n", now,
