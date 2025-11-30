@@ -15,8 +15,9 @@ Checks:             '*,
 	-hicpp-deprecated-headers,
 	-modernize-deprecated-headers,
 	-misc-include-cleaner,
-  -hicpp-use-auto,
-  -modernize-use-auto
+	-hicpp-use-auto,
+	-modernize-use-auto,
+	-readability-identifier-length
 	'
 WarningsAsErrors:   '1'
 HeaderFilterRegex:  ''
