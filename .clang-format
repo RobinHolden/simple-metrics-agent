@@ -15,7 +15,7 @@ AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Empty
 
-BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBinaryOperators: None
 BreakBinaryOperations: RespectPrecedence
 
 AlignOperands: Align
