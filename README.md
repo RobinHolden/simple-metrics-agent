@@ -1,7 +1,8 @@
 # simple-metrics-agent
 
-Small C++ metrics agent that periodically collects host metrics and ships them over TCP as JSON lines.  
-Designed to run on Linux and macOS and to talk to a log / metrics pipeline (for example, a [simple TCP log collector](https://github.com/RobinHolden/simple-log-pipeline)).
+Small C++ metrics agent that periodically collects host metrics and ships them over TCP as JSON lines.<br>
+Designed to run on Linux and macOS and to talk to a log / metrics pipeline.<br>
+For local experiments, it works out of the box with my Go TCP log collector: [simple-log-pipeline](https://github.com/RobinHolden/simple-log-pipeline).
 
 ## Features
 
@@ -28,7 +29,7 @@ The goal is to have a compact, readable example of a small POSIX agent written i
   - Clang or GCC on Linux
   - Apple Clang on macOS
 
-On Linux, the code uses `getloadavg` and `sysinfo`.  
+On Linux, the code uses `getloadavg` and `sysinfo`.<br>
 On macOS, it uses `getloadavg`, `sysctlbyname("hw.memsize")`, and `host_statistics64`.
 
 ## Build
@@ -74,18 +75,18 @@ You can override these with flags:
 
 Available options:
 
-- `--endpoint HOST:PORT`  
+- `--endpoint HOST:PORT`<br>
   TCP endpoint to send JSON lines to (default `127.0.0.1:9090`).
-- `--interval SECONDS`  
+- `--interval SECONDS`<br>
   Metrics collection interval in seconds (default `5`).
-- `--hostname NAME`  
+- `--hostname NAME`<br>
   Override auto-detected hostname.
-- `--help`, `-h`  
+- `--help`, `-h`<br>
   Print usage and exit.
 
 ### Output format
 
-Every interval, the agent collects metrics and sends a single JSON line over TCP.  
+Every interval, the agent collects metrics and sends a single JSON line over TCP.<br>
 It also logs the same line to stdout for visibility.
 
 Example JSON payload:
@@ -118,6 +119,26 @@ Terminal 2 (from `build/`):
 ```
 
 You should see one JSON line per interval in the `nc` terminal.
+
+### Example with the Go log pipeline
+
+If you are using the companion project [simple-log-pipeline](https://github.com/RobinHolden/simple-log-pipeline):
+
+1. Start the pipeline (in that repo):
+
+   ```sh
+   go run .
+   ```
+
+   It listens on `127.0.0.1:9090` by default.
+
+2. Start the agent (in this repo, from `build/`):
+
+   ```sh
+   ./simple-metrics-agent --endpoint 127.0.0.1:9090
+   ```
+
+The pipeline will append one JSON line per interval to its output file.
 
 ### Shutdown
 
@@ -154,10 +175,10 @@ The tests are written with plain `assert` in `tests/unit_tests.cpp`, no addition
 
 The project is split into small, focused translation units:
 
-- `src/main.cpp`  
+- `src/main.cpp`<br>
   Parses arguments, prints usage on `--help` or errors, and hands off to `Agent`.
 
-- `src/agent.*`  
+- `src/agent.*`<br>
   Core runtime loop:
   - installs signal handlers
   - resolves hostname via `detect_hostname()` (unless overridden)
@@ -169,14 +190,14 @@ The project is split into small, focused translation units:
     - connects and sends to the TCP endpoint via `TcpClient`
   - exits cleanly on signal
 
-- `src/config.*`  
+- `src/config.*`<br>
   Holds `AgentConfig` and CLI parsing logic:
   - `--endpoint`, `--interval`, `--hostname`, `--help`
   - uses `std::from_chars` to parse the interval as seconds
   - validates integer, positive interval values
   - provides a `print_usage(std::ostream&)` helper
 
-- `src/metrics.*`  
+- `src/metrics.*`<br>
   Platform-specific metrics collection:
   - load average via `getloadavg`
   - memory stats via:
@@ -184,7 +205,7 @@ The project is split into small, focused translation units:
     - macOS: `sysctlbyname("hw.memsize")` + `host_statistics64` + `host_page_size`
   - returns a `HostMetrics` struct and an error string on failure
 
-- `src/net.*`  
+- `src/net.*`<br>
   Simple POSIX TCP client:
   - `parse_endpoint("host:port")` with basic validation
   - `TcpClient` with:
@@ -192,18 +213,18 @@ The project is split into small, focused translation units:
     - `send_all` loop with `send`, handling `EINTR` and short writes
     - `send_line` helper for newline-terminated messages
 
-- `src/hostname.*`  
+- `src/hostname.*`<br>
   Thin wrapper around `gethostname` that:
   - uses a fixed-size `std::array<char, 256>`
   - guarantees null termination
   - returns a `HostnameResult` struct with `ok`, `hostname`, and `error`
 
-- `src/posix_error.hpp`  
+- `src/posix_error.hpp`<br>
   Small helper to turn `errno` into a readable `std::string`.
 
 Tests live in:
 
-- `tests/unit_tests.cpp`  
+- `tests/unit_tests.cpp`<br>
   Self-contained, links directly against `config.cpp` and `net.cpp`.
 
 ## Limitations and possible extensions
