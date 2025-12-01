@@ -36,3 +36,19 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     )
 	target_compile_options(simple-metrics-agent PRIVATE ${WARNINGS})
 endif()
+
+
+enable_testing()
+
+add_executable(unit_tests
+    tests/unit_tests.cpp
+    src/config.cpp
+    src/net.cpp
+)
+
+target_compile_features(unit_tests PRIVATE cxx_std_20)
+target_include_directories(unit_tests PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+add_test(NAME unit_tests COMMAND unit_tests)
